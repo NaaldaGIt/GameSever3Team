@@ -120,7 +120,7 @@ namespace BattleArena
                 Message  = $"{Nickname}님, 배틀아레나에 오신 것을 환영합니다!"
             });
 
-            if(_isLoggedIn == false)
+            if(_isConnected == false)
             {
                 return;
             }
@@ -183,6 +183,8 @@ namespace BattleArena
                 return;
             }
 
+            bool wasLoggedIn = _isLoggedIn;
+
             _isConnected = false;
 
             _isLoggedIn = false;
@@ -196,6 +198,15 @@ namespace BattleArena
             catch { }
 
             GameServer.Instance.RemoveSession(PlayerId);
+
+            if (wasLoggedIn)
+            {
+                GameServer.Instance.Broadcast(new NoticePacket
+                {
+                    Type = PacketType.PLAYER_OUT,
+                    Message = $"{Nickname}님이 퇴장했습니다."
+                }, exceptPlayerId: PlayerId);
+            }
         }
     }
 }

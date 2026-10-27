@@ -160,6 +160,8 @@ namespace BattleArena
                 _udpError = "";
 
                 _ = UdpReceiveLoopAsync();
+
+                _ = SendPositionAsync();
             }
             catch (Exception ex)
             {
@@ -180,6 +182,11 @@ namespace BattleArena
             _tcpStatus = "재접속 중...";
 
             await Task.Delay(300);
+
+            _lastState = "";
+            _udpError = "";
+            _seq = 0;
+
             await ConnectAsync();
         }
 
