@@ -16,6 +16,11 @@ namespace BattleArena
         public int    PlayerId { get; private set; }
         public string Nickname { get; private set; } = "Unknown";
 
+
+        private volatile bool _isLoggedIn = false;
+        public bool IsLoggedIn => _isLoggedIn;
+
+
         // ── 위치 정보 (UDP로 갱신됨) ──
         public int X { get; set; }
         public int Y { get; set; }
@@ -115,6 +120,13 @@ namespace BattleArena
                 Message  = $"{Nickname}님, 배틀아레나에 오신 것을 환영합니다!"
             });
 
+            if(_isLoggedIn == false)
+            {
+                return;
+            }
+
+            _isLoggedIn = true;
+
             GameServer.Instance.Broadcast(new NoticePacket
             {
                 Type    = PacketType.PLAYER_IN,
@@ -172,6 +184,8 @@ namespace BattleArena
             }
 
             _isConnected = false;
+
+            _isLoggedIn = false;
 
             try
             {

@@ -127,6 +127,12 @@ namespace BattleArena
             foreach (var pair in _sessions)
             {
                 if (pair.Key == exceptPlayerId) continue;
+
+                if(pair.Value.IsLoggedIn == false)
+                {
+                    continue;
+                }
+
                 _ = pair.Value.SendAsync(packet);
             }
         }
