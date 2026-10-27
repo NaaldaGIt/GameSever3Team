@@ -45,7 +45,11 @@ namespace BattleArena
                 while (_isConnected)
                 {
                     string? json = await PacketHelper.ReceiveAsync(_socket);
-                    if (json == null) break;
+
+                    if (json == null)
+                    {
+                        break;
+                    }
 
                     HandlePacket(json);
                 }
@@ -68,7 +72,11 @@ namespace BattleArena
         private async void HandlePacket(string json)
         {
             dynamic? packet = JsonConvert.DeserializeObject(json);
-            if (packet == null) return;
+
+            if (packet == null)
+            {
+                return;
+            }
 
             int type = (int)packet.Type;
 
@@ -91,7 +99,11 @@ namespace BattleArena
         private async Task HandleLoginAsync(string json)
         {
             LoginPacket? login = JsonConvert.DeserializeObject<LoginPacket>(json);
-            if (login == null) return;
+
+            if (login == null)
+            {
+                return;
+            }
 
             Nickname = string.IsNullOrWhiteSpace(login.Nickname)
                 ? $"Player{PlayerId}"
@@ -113,7 +125,11 @@ namespace BattleArena
         private async Task HandleChatAsync(string json)
         {
             ChatPacket? chat = JsonConvert.DeserializeObject<ChatPacket>(json);
-            if (chat == null) return;
+
+            if (chat == null)
+            {
+                return;
+            }
 
             // 받은 그대로 전체에게 중계합니다
             GameServer.Instance.Broadcast(new ChatEchoPacket
@@ -130,7 +146,10 @@ namespace BattleArena
         // ═══════════════════════════════════════
         public async Task SendAsync(object packet)
         {
-            if (!_isConnected) return;
+            if (!_isConnected)
+            {
+                return;
+            }
 
             try
             {
@@ -147,12 +166,17 @@ namespace BattleArena
         // ═══════════════════════════════════════
         public void Disconnect()
         {
-            if (!_isConnected) return;
+            if (!_isConnected)
+            {
+                return;
+            }
+
             _isConnected = false;
 
             try
             {
                 _socket.Shutdown(SocketShutdown.Both);
+
                 _socket.Close();
             }
             catch { }
