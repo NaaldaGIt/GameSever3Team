@@ -242,6 +242,11 @@ namespace BattleArena
                 if (!string.IsNullOrWhiteSpace(msg))
                     await SendPacketAsync(new { Type = 2, Message = msg });
             }
+            catch (Exception ex) when (ex is SocketException || ex is ObjectDisposedException)
+            {
+                _tcpStatus = "연결 끊김";
+                _chatLog.Enqueue("채팅 전송 실패: 서버 연결이 끊겼습니다. R로 재접속하세요.");
+            }
             finally
             {
                 Console.CursorVisible = false;
